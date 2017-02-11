@@ -142,7 +142,7 @@ delay(30)
 
 Set http response `Server-Timing` header: `0=0.097;"/users/me(1 2 3)",1=0.096;"getUser(2 3)",2=0.03;"mongodb:get",3=0.054;"validate:user",4=0.12;"Total"`
 
-![](assets/server-timing.png)
+![](assets/Server-Timing.png)
 
 ## License
 
