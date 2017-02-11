@@ -54,6 +54,8 @@ delay(10).then(() => {
 
 Get tming json format
 
+- `ignoreChildren` ignore the children, default is false
+
 ```js
 const Timing = require('supertiming');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -92,6 +94,8 @@ delay(30)
 ### toServerTiming
 
 Get server timing for http response
+
+- `ignoreChildren` ignore the children, default is false
 
 ```js
 const Timing = require('supertiming');
