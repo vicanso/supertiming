@@ -15,11 +15,49 @@ $ npm install supertiming
 
 ## API
 
+### start
+
+Set the starting point of timing function, if there is any function is not finished, it will be the child of those functions
+
+- `name` The function name of timing
+
+```js
+const Timing = require('supertiming');
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const timing = new Timing();
+timing.start('GetUserInfo');
+delay(10).then(() => {
+  timing.start('FindOneById:User');
+});
+```
+
+### end
+
+Set the ending point of timing function
+
+- `name` The function name to timing, if the name is `*`, end all doing timing
+
+```js
+const Timing = require('supertiming');
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const timing = new Timing();
+timing.start('GetUserInfo');
+delay(10).then(() => {
+  timing.start('FindOneById:User');
+  return delay(40);
+}).then(() => {
+  timing.end('*');
+});
+```
+
+### toJSON
+
 Get tming json format
 
 ```js
 const Timing = require('supertiming');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const timing = new Timing();
 timing.start('/users/me');
 timing.start('getUser');
 timing.start('mongodb:get')
@@ -50,11 +88,15 @@ delay(30)
     console.info(data);
   }).catch(console.error);
 ```
+
+### toServerTiming
+
 Get server timing for http response
 
 ```js
 const Timing = require('supertiming');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const timing = new Timing();
 timing.start('/users/me');
 timing.start('getUser');
 timing.start('mongodb:get')

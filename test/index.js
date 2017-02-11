@@ -63,4 +63,27 @@ describe('supertiming', () => {
       })
       .catch(done);
   });
+
+  it('end all timing successful', (done) => {
+    const timing = new Timing();
+    timing.start('/users/me');
+    timing.start('getUser');
+    timing.start('mongodb:get')
+    delay(30)
+      .then(() => {
+        timing.end('mongodb:get');
+        return delay(50);
+      })
+      .then(() => {
+        timing.end('*');
+        const data = timing.toJSON();
+        assert.equal(data.length, 3);
+        assert.equal(data[0].name, '/users/me');
+        assert.equal(data[0].children.join(','), 'getUser,mongodb:get');
+        assert.equal(data[1].name, 'getUser');
+        assert.equal(data[1].children.join(','), 'mongodb:get');
+        assert.equal(data[2].name, 'mongodb:get');
+        done();
+      }).catch(done);
+  });
 });
