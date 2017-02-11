@@ -50,6 +50,23 @@ delay(10).then(() => {
 });
 ```
 
+### addMetric
+
+Add metric to timing
+
+- `name` The function name of timing
+
+- `use` Cost time of function
+
+```js
+const Timing = require('supertiming');
+const timing = new Timing();
+timing.addMetric('Get-Session', 35);
+const data = timing.toJSON();
+// [ { name: 'Get-Session', use: 35 } ]
+console.info(data);
+```
+
 ### toJSON
 
 Get tming json format
@@ -122,3 +139,11 @@ delay(30)
     console.info(data);
   }).catch(console.error);
 ```
+
+Set http response `Server-Timing` header: `0=0.097;"/users/me(1 2 3)",1=0.096;"getUser(2 3)",2=0.03;"mongodb:get",3=0.054;"validate:user",4=0.12;"Total"`
+
+![](assets/server-timing.png)
+
+## License
+
+MIT

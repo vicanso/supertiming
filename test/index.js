@@ -24,14 +24,16 @@ describe('supertiming', () => {
       .then(() => {
         timing.end('getUser');
         timing.end('/users/me');
+        timing.addMetric('request-handle', 100);
         const data = timing.toJSON();
-        assert.equal(data.length, 4);
+        assert.equal(data.length, 5);
         assert.equal(data[0].name, '/users/me');
         assert.equal(data[0].children.join(','), 'getUser,mongodb:get,validate:user');
         assert.equal(data[1].name, 'getUser');
         assert.equal(data[1].children.join(','), 'mongodb:get,validate:user');
         assert.equal(data[2].name, 'mongodb:get');
         assert.equal(data[3].name, 'validate:user');
+        assert.equal(data[4].name, 'request-handle');
         done();
       })
       .catch(done);
