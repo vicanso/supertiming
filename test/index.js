@@ -9,7 +9,7 @@ describe('supertiming', () => {
   it('get timing json sucessful', (done) => {
     const timing = new Timing();
     timing.start('/users/me');
-    timing.start('getUser');
+    const endGetUser = timing.start('getUser');
     timing.start('mongodb:get')
     delay(30)
       .then(() => {
@@ -22,7 +22,7 @@ describe('supertiming', () => {
         return delay(10);
       })
       .then(() => {
-        timing.end('getUser');
+        endGetUser();
         timing.end('/users/me');
         timing.addMetric('request-handle', 100);
         const data = timing.toJSON();

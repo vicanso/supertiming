@@ -25,9 +25,11 @@ Set the starting point of timing function, if there is any function is not finis
 const Timing = require('supertiming');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const timing = new Timing();
-timing.start('GetUserInfo');
+const endGetUser = timing.start('GetUserInfo');
 delay(10).then(() => {
   timing.start('FindOneById:User');
+}).then(() => {
+  endGetUser();
 });
 ```
 
@@ -78,7 +80,7 @@ const Timing = require('supertiming');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const timing = new Timing();
 timing.start('/users/me');
-timing.start('getUser');
+const endGetUser = timing.start('getUser');
 timing.start('mongodb:get')
 delay(30)
   .then(() => {
@@ -91,7 +93,7 @@ delay(30)
     return delay(10);
   })
   .then(() => {
-    timing.end('getUser');
+    endGetUser();
     timing.end('/users/me');
     const data = timing.toJSON();
     //[ { name: '/users/me',
@@ -139,8 +141,64 @@ delay(30)
     console.info(data);
   }).catch(console.error);
 ```
+## Examples
 
-Set http response `Server-Timing` header: `0=0.097;"/users/me(1 2 3)",1=0.096;"getUser(2 3)",2=0.03;"mongodb:get",3=0.054;"validate:user",4=0.12;"Total"`
+Set `Server-Timing` useing `Koa2`
+
+```js
+const Timing = require('supertiming');
+const Koa = require('koa');
+const app = new Koa();
+
+function getUser() {
+  ...
+}
+
+function mongodbGet() {
+  ...
+}
+
+function validateUser() {
+  ...
+}
+
+app.use((ctx, next) => {
+  const timing = new Timing();
+  timing.start('Total');
+  ctx.state.timing = timing;
+  return next().then(() => {
+    tming.end('*');
+    ctx.set('Server-Timing', timing.toServerTiming());
+  });
+});
+
+app.use((ctx) => {
+  if (ctx.url === '/user/me') {
+    const timing = ctx.state.timing;
+    timing.start('/user/me');
+    timing.start('getUser');
+    return getUser()
+      .then(() => {
+        timing.start('mongodb:get');
+        return mongodbGet();
+      })
+      .then(() => {
+        timing.end('mongodb:get');
+        timing.start('validate:user');
+        return validateUser();
+      })
+      .then(() => {
+        timing.end('validate:user');
+        ctx.body = {
+          account: 'vicanso',
+        };
+        timing.end('/user/me');
+      });
+  }
+});
+
+app.listen();
+```
 
 ![](assets/Server-Timing.png)
 
