@@ -1,7 +1,7 @@
 {
   "name": "supertiming",
   "description": "function timing",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "./lib/timing",
   "keywords": [
     "timing",
