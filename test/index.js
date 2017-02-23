@@ -114,6 +114,7 @@ describe('supertiming', () => {
         timing.end('getUser');
         timing.end('/users/me');
         const serverTiming = timing.toServerTiming(true);
+        assert.equal(serverTiming[0], 'A');
         assert.equal(serverTiming.split(',').length, 4);
         assert.equal(serverTiming.split('=').length, 5);
         assert.equal(serverTiming.split(';').length, 5);
