@@ -137,7 +137,7 @@ delay(30)
     timing.end('getUser');
     timing.end('/users/me');
     const data = timing.toServerTiming();
-    // 0=0.097;"/users/me(1 2 3)",1=0.096;"getUser(2 3)",2=0.03;"mongodb:get",3=0.054;"validate:user"
+    // A=0.097;"/users/me(1 2 3)",B=0.096;"getUser(2 3)",C=0.03;"mongodb:get",D=0.054;"validate:user"
     console.info(data);
   }).catch(console.error);
 ```
