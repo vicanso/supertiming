@@ -37,7 +37,7 @@ delay(10).then(() => {
 
 Set the ending point of timing function
 
-- `name` The function name to timing, if the name is `*`, end all doing timing
+- `name` The function name to timing, if the name is `*` or `null`, end all doing timing
 
 ```js
 const Timing = require('supertiming');
