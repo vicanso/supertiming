@@ -48,7 +48,7 @@ delay(10).then(() => {
   timing.start('FindOneById:User');
   return delay(40);
 }).then(() => {
-  timing.end('*');
+  timing.end();
 });
 ```
 
@@ -67,6 +67,49 @@ timing.addMetric('Get-Session', 35);
 const data = timing.toJSON();
 // [ { name: 'Get-Session', use: 35 } ]
 console.info(data);
+```
+
+### remove
+
+Remove the function from timing
+
+- `name` The function name of timing
+
+```js
+const Timing = require('supertiming');
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const timing = new Timing();
+timing.start('GetUserInfo');
+delay(10).then(() => {
+  timing.start('FindOneById:User');
+  return delay(40);
+}).then(() => {
+  timing.remove('FindOneById:User');
+  // only timing `GetUserInfo`
+  timing.end();
+});
+```
+
+### rename
+
+Change the function name of timing
+
+- `name` The original function name
+
+- `newName` The new function name
+
+```js
+const Timing = require('supertiming');
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const timing = new Timing();
+timing.start('GetUserInfo');
+delay(10).then(() => {
+  timing.start('FindOneById:User');
+  return delay(40);
+}).then(() => {
+  timing.rename('FindOneById:User', 'FindOneByIdNew:User');
+  timing.end();
+});
 ```
 
 ### toJSON
@@ -141,6 +184,40 @@ delay(30)
     console.info(data);
   }).catch(console.error);
 ```
+
+### setServerTimingStartIndex
+
+Set the server timing start index, default is `A`
+
+- `ch` The start index char
+
+```js
+const Timing = require('supertiming');
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const timing = new Timing();
+timing.setStartIndex('a');
+timing.start('/users/me');
+timing.start('getUser');
+timing.start('mongodb:get')
+delay(30)
+  .then(() => {
+    timing.end('mongodb:get');
+    timing.start('validate:user');
+    return delay(50);
+  })
+  .then(() => {
+    timing.end('validate:user');
+    return delay(10);
+  })
+  .then(() => {
+    timing.end('getUser');
+    timing.end('/users/me');
+    const data = timing.toServerTiming();
+    // a=0.097;"/users/me(1 2 3)",b=0.096;"getUser(2 3)",c=0.03;"mongodb:get",d=0.054;"validate:user"
+    console.info(data);
+  }).catch(console.error);
+```
+
 ## Examples
 
 Set `Server-Timing` useing `Koa2`
