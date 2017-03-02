@@ -123,6 +123,35 @@ describe('supertiming', () => {
       .catch(done);
   });
 
+  it('set server timing start index sucessful', (done) => {
+    const timing = new Timing();
+    timing.setStartIndex('a');
+    timing.start('/users/me');
+    timing.start('getUser');
+    timing.start('mongodb:get')
+    delay(30)
+      .then(() => {
+        timing.end('mongodb:get');
+        timing.start('validate:user');
+        return delay(50);
+      })
+      .then(() => {
+        timing.end('validate:user');
+        return delay(10);
+      })
+      .then(() => {
+        timing.end('getUser');
+        timing.end('/users/me');
+        const serverTiming = timing.toServerTiming(true);
+        assert.equal(serverTiming[0], 'a');
+        assert.equal(serverTiming.split(',').length, 4);
+        assert.equal(serverTiming.split('=').length, 5);
+        assert.equal(serverTiming.split(';').length, 5);
+        done();
+      })
+      .catch(done);
+  });
+
   it('end all timing successful', (done) => {
     const timing = new Timing();
     timing.start('/users/me');
