@@ -68,6 +68,34 @@ describe('supertiming', () => {
       .catch(done);
   });
 
+  it('remove time record sucessful', (done) => {
+    const timing = new Timing();
+    timing.start('/users/me');
+    timing.start('getUser');
+    timing.start('mongodb:get')
+    delay(30)
+      .then(() => {
+        timing.end('mongodb:get');
+        timing.start('validate:user');
+        return delay(50);
+      })
+      .then(() => {
+        timing.end('validate:user');
+        return delay(10);
+      })
+      .then(() => {
+        timing.remove('getUser');
+        timing.end();
+        const data = timing.toJSON(true);
+        assert.equal(data.length, 3);
+        assert.equal(data[0].name, '/users/me');
+        assert.equal(data[1].name, 'mongodb:get');
+        assert.equal(data[2].name, 'validate:user');
+        done();
+      })
+      .catch(done);
+  });
+
   it('get server timing sucessful', (done) => {
     const timing = new Timing();
     timing.start('/users/me');
