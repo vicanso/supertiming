@@ -1,3 +1,6 @@
+# 1.2.0
+  * `Server Timing` use millisecond instead of second
+
 # 1.1.0
   * Add `setStartIndex` to change the server timing index
   * Add `remove` to remove function from timing
