@@ -10,7 +10,7 @@ describe('supertiming', () => {
     const timing = new Timing();
     timing.start('/users/me');
     const endGetUser = timing.start('getUser');
-    timing.start('mongodb:get')
+    timing.start('mongodb:get');
     delay(30)
       .then(() => {
         timing.end('mongodb:get');
@@ -43,7 +43,7 @@ describe('supertiming', () => {
     const timing = new Timing();
     timing.start('/users/me');
     timing.start('getUser');
-    timing.start('mongodb:get')
+    timing.start('mongodb:get');
     delay(30)
       .then(() => {
         timing.end('mongodb:get');
@@ -72,7 +72,7 @@ describe('supertiming', () => {
     const timing = new Timing();
     timing.start('/users/me');
     timing.start('getUser');
-    timing.start('mongodb:get')
+    timing.start('mongodb:get');
     delay(30)
       .then(() => {
         timing.end('mongodb:get');
@@ -100,7 +100,7 @@ describe('supertiming', () => {
     const timing = new Timing();
     timing.start('/users/me');
     timing.start('getUser');
-    timing.start('mongodb:get')
+    timing.start('mongodb:get');
     delay(30)
       .then(() => {
         timing.end('mongodb:get');
@@ -112,7 +112,7 @@ describe('supertiming', () => {
         return delay(10);
       })
       .then(() => {
-        timing.rename('getUser', 'getUserNew')
+        timing.rename('getUser', 'getUserNew');
         timing.end();
         const data = timing.toJSON(true);
         assert.equal(data.length, 4);
@@ -129,7 +129,7 @@ describe('supertiming', () => {
     const timing = new Timing();
     timing.start('/users/me');
     timing.start('getUser');
-    timing.start('mongodb:get')
+    timing.start('mongodb:get');
     delay(30)
       .then(() => {
         timing.end('mongodb:get');
@@ -156,7 +156,7 @@ describe('supertiming', () => {
     const timing = new Timing();
     timing.start('/users/me');
     timing.start('getUser');
-    timing.start('mongodb:get')
+    timing.start('mongodb:get');
     delay(30)
       .then(() => {
         timing.end('mongodb:get');
@@ -180,12 +180,49 @@ describe('supertiming', () => {
       .catch(done);
   });
 
+  it('get server timing(precision: "ns") successful', (done) => {
+    const timing = new Timing({
+      precision: 'ns',
+    });
+    timing.start('/users/me');
+    timing.start('getUser');
+    timing.start('mongodb:get');
+    delay(30)
+      .then(() => {
+        timing.end('mongodb:get');
+        timing.start('validate:user');
+        return delay(50);
+      })
+      .then(() => {
+        timing.end('validate:user');
+        return delay(10);
+      })
+      .then(() => {
+        timing.end('getUser');
+        timing.end('/users/me');
+        const serverTiming = timing.toServerTiming(true);
+        serverTiming.split(',').forEach((str) => {
+          const arr = str.split(';');
+          assert.equal(arr.length, 2);
+          const timeArr = arr[0].split('=');
+          assert.equal(timeArr.length, 2);
+          assert(parseFloat(timeArr[1]) > 10);
+        });
+        assert.equal(serverTiming[0], 'A');
+        assert.equal(serverTiming.split(',').length, 4);
+        assert.equal(serverTiming.split('=').length, 5);
+        assert.equal(serverTiming.split(';').length, 5);
+        done();
+      })
+      .catch(done);
+  });
+
   it('set server timing start index sucessful', (done) => {
     const timing = new Timing();
     timing.setStartIndex('a');
     timing.start('/users/me');
     timing.start('getUser');
-    timing.start('mongodb:get')
+    timing.start('mongodb:get');
     delay(30)
       .then(() => {
         timing.end('mongodb:get');
@@ -213,7 +250,7 @@ describe('supertiming', () => {
     const timing = new Timing();
     timing.start('/users/me');
     timing.start('getUser');
-    timing.start('mongodb:get')
+    timing.start('mongodb:get');
     delay(30)
       .then(() => {
         timing.end('mongodb:get');
@@ -229,6 +266,7 @@ describe('supertiming', () => {
         assert.equal(data[1].children.join(','), 'mongodb:get');
         assert.equal(data[2].name, 'mongodb:get');
         done();
-      }).catch(done);
+      })
+      .catch(done);
   });
 });

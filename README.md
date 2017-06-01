@@ -15,11 +15,25 @@ $ npm install supertiming
 
 ## API
 
+### constructor
+
+- `options.startIndex` The start index for server timing, default is 'A'
+- `options.precision` The precision for time, `ms` or `ns`, default is 'ms'
+
+```js
+const Timing = require('supertiming');
+const timing = new Timing({
+  startIndex: '0',
+  precision: 'ns',
+})
+```
+
 ### start
 
 Set the starting point of timing function, if there is any function is not finished, it will be the child of those functions
 
 - `name` The function name of timing
+
 
 ```js
 const Timing = require('supertiming');
