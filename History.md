@@ -1,3 +1,6 @@
+# 1.3.0
+  * Support nano seconds
+
 # 1.2.0
   * `Server Timing` use millisecond instead of second
 
