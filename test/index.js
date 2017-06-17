@@ -218,7 +218,9 @@ describe('supertiming', () => {
   });
 
   it('set server timing start index sucessful', (done) => {
-    const timing = new Timing();
+    const timing = new Timing({
+      precision: 'ns',
+    });
     timing.setStartIndex('a');
     timing.start('/users/me');
     timing.start('getUser');
@@ -241,6 +243,8 @@ describe('supertiming', () => {
         assert.equal(serverTiming.split(',').length, 4);
         assert.equal(serverTiming.split('=').length, 5);
         assert.equal(serverTiming.split(';').length, 5);
+        const timingString = timing.toString();
+        assert.equal(timingString.split(' ').length, 4);
         done();
       })
       .catch(done);

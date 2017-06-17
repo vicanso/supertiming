@@ -167,6 +167,38 @@ delay(30)
   }).catch(console.error);
 ```
 
+### toString
+
+- `ignoreChildren` ignore the children, default is false
+
+```js
+const Timing = require('supertiming');
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const timing = new Timing({
+  precision: 'ns',
+});
+timing.start('/users/me');
+const endGetUser = timing.start('getUser');
+timing.start('mongodb:get')
+delay(30)
+  .then(() => {
+    timing.end('mongodb:get');
+    timing.start('validate:user');
+    return delay(50);
+  })
+  .then(() => {
+    timing.end('validate:user');
+    return delay(10);
+  })
+  .then(() => {
+    endGetUser();
+    timing.end('/users/me');
+    const data = timing.toString();
+    // /users/me[getUser,mongodb:get,validate:user][99915666ns] getUser[mongodb:get,validate:user][99834611ns] mongodb:get[32904455ns] validate:user[53700273ns]
+    console.info(data);
+  }).catch(console.error);
+```
+
 ### toServerTiming
 
 Get server timing for http response
