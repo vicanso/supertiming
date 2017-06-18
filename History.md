@@ -1,3 +1,6 @@
+# 1.3.1
+  * Add `toString` function
+
 # 1.3.0
   * Support nano seconds
 
