@@ -1,3 +1,7 @@
+# 1.3.2
+  * Support extra field for timing's info
+  * Support `start` and `end` event
+
 # 1.3.1
   * Add `toString` function
 
