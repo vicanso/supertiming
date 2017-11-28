@@ -9,6 +9,12 @@ describe('supertiming', () => {
   // eslint-disable-next-line
   it('get timing json sucessful', (done) => {
     const timing = new Timing();
+    timing.once('start', (data) => {
+      assert.equal(data.name, '/users/me');
+    });
+    timing.once('end', (data) => {
+      assert.equal(data.name, 'mongodb:get');
+    });
     timing.start('/users/me');
     const endGetUser = timing.start('getUser');
     timing.start('mongodb:get', {
