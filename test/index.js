@@ -4,16 +4,21 @@ const Timing = require('..');
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-
+// eslint-disable-next-line
 describe('supertiming', () => {
+  // eslint-disable-next-line
   it('get timing json sucessful', (done) => {
     const timing = new Timing();
     timing.start('/users/me');
     const endGetUser = timing.start('getUser');
-    timing.start('mongodb:get');
+    timing.start('mongodb:get', {
+      fn: 'find',
+    });
     delay(30)
       .then(() => {
-        timing.end('mongodb:get');
+        timing.end('mongodb:get', {
+          count: 2,
+        });
         timing.start('validate:user');
         return delay(50);
       })
@@ -32,13 +37,17 @@ describe('supertiming', () => {
         assert.equal(data[1].name, 'getUser');
         assert.equal(data[1].children.join(','), 'mongodb:get,validate:user');
         assert.equal(data[2].name, 'mongodb:get');
+
+        assert.equal(data[2].extra.fn, 'find');
+        assert.equal(data[2].extra.count, 2);
+
         assert.equal(data[3].name, 'validate:user');
         assert.equal(data[4].name, 'request-handle');
         done();
       })
       .catch(done);
   });
-
+  // eslint-disable-next-line
   it('get timing json(ignore children) sucessful', (done) => {
     const timing = new Timing();
     timing.start('/users/me');
@@ -68,6 +77,7 @@ describe('supertiming', () => {
       .catch(done);
   });
 
+  // eslint-disable-next-line
   it('remove time record sucessful', (done) => {
     const timing = new Timing();
     timing.start('/users/me');
@@ -96,6 +106,7 @@ describe('supertiming', () => {
       .catch(done);
   });
 
+  // eslint-disable-next-line
   it('rename the timing name sucessful', (done) => {
     const timing = new Timing();
     timing.start('/users/me');
@@ -125,6 +136,7 @@ describe('supertiming', () => {
       .catch(done);
   });
 
+  // eslint-disable-next-line
   it('get server timing sucessful', (done) => {
     const timing = new Timing();
     timing.start('/users/me');
@@ -152,6 +164,7 @@ describe('supertiming', () => {
       .catch(done);
   });
 
+  // eslint-disable-next-line
   it('get server timing sucessful', (done) => {
     const timing = new Timing();
     timing.start('/users/me');
@@ -180,6 +193,7 @@ describe('supertiming', () => {
       .catch(done);
   });
 
+  // eslint-disable-next-line
   it('get server timing(precision: "ns") successful', (done) => {
     const timing = new Timing({
       precision: 'ns',
@@ -217,6 +231,7 @@ describe('supertiming', () => {
       .catch(done);
   });
 
+  // eslint-disable-next-line
   it('set server timing start index sucessful', (done) => {
     const timing = new Timing({
       precision: 'ns',
@@ -250,6 +265,7 @@ describe('supertiming', () => {
       .catch(done);
   });
 
+  // eslint-disable-next-line
   it('end all timing successful', (done) => {
     const timing = new Timing();
     timing.start('/users/me');
