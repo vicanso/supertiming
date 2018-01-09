@@ -162,9 +162,12 @@ describe('supertiming', () => {
         timing.end('getUser');
         timing.end('/users/me');
         const serverTiming = timing.toServerTiming();
-        assert.equal(serverTiming.split(',').length, 4);
-        assert.equal(serverTiming.split('=').length, 5);
-        assert.equal(serverTiming.split(';').length, 5);
+        const entries = serverTiming.split(',')
+        assert.equal(entries.length, 4);
+        entries.forEach((entry) => {
+          assert.equal(entry.split('=').length, 3);
+          assert.equal(entry.split(';').length, 3);
+        })
         done();
       })
       .catch(done);
@@ -191,9 +194,12 @@ describe('supertiming', () => {
         timing.end('/users/me');
         const serverTiming = timing.toServerTiming(true);
         assert.equal(serverTiming[0], 'A');
-        assert.equal(serverTiming.split(',').length, 4);
-        assert.equal(serverTiming.split('=').length, 5);
-        assert.equal(serverTiming.split(';').length, 5);
+        const entries = serverTiming.split(',')
+        assert.equal(entries.length, 4);
+        entries.forEach((entry, index) => {
+          assert.equal(entry.split('=').length, 3);
+          assert.equal(entry.split(';').length, 3);
+        })
         done();
       })
       .catch(done);
@@ -221,17 +227,16 @@ describe('supertiming', () => {
         timing.end('getUser');
         timing.end('/users/me');
         const serverTiming = timing.toServerTiming(true);
-        serverTiming.split(',').forEach((str) => {
-          const arr = str.split(';');
-          assert.equal(arr.length, 2);
-          const timeArr = arr[0].split('=');
+        assert.equal(serverTiming[0], 'A');
+        const entries = serverTiming.split(',')
+        assert.equal(entries.length, 4);
+        entries.forEach((entry) => {
+          assert.equal(entry.split('=').length, 3);
+          assert.equal(entry.split(';').length, 3);
+          const timeArr = entry.split(';')[1].split('=');
           assert.equal(timeArr.length, 2);
           assert(parseFloat(timeArr[1]) > 10);
         });
-        assert.equal(serverTiming[0], 'A');
-        assert.equal(serverTiming.split(',').length, 4);
-        assert.equal(serverTiming.split('=').length, 5);
-        assert.equal(serverTiming.split(';').length, 5);
         done();
       })
       .catch(done);
@@ -261,9 +266,13 @@ describe('supertiming', () => {
         timing.end('/users/me');
         const serverTiming = timing.toServerTiming(true);
         assert.equal(serverTiming[0], 'a');
-        assert.equal(serverTiming.split(',').length, 4);
-        assert.equal(serverTiming.split('=').length, 5);
-        assert.equal(serverTiming.split(';').length, 5);
+        const entries = serverTiming.split(',')
+        assert.equal(entries.length, 4);
+        entries.forEach((entry) => {
+          assert.equal(entry.split('=').length, 3);
+          assert.equal(entry.split(';').length, 3);
+        });
+
         const timingString = timing.toString();
         assert.equal(timingString.split(' ').length, 4);
         done();
