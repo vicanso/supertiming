@@ -1,3 +1,6 @@
+# 2.0.0
+  * Update header syntax
+
 # 1.3.2
   * Support extra field for timing's info
   * Support `start` and `end` event
